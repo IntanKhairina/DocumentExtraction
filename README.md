@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Document Intelligence Agent
 
 Extract structured financial data from invoices.
@@ -35,3 +36,6 @@ curl -X POST http://localhost:8000/documents \
   "processing_time_seconds": 4.2
 }
 ```
+=======
+# document-intelligence-agent
+>>>>>>> 7fde49652ce28dc44a1503cc2e6288d8d9a36b0a
