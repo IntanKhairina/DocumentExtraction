@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Document Intelligence Agent
 
 Extract structured financial data from invoices.
