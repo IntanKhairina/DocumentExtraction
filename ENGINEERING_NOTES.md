@@ -1,26 +1,55 @@
-# Engineering Notes
+Engineering Notes
 
 ## Architecture
-- **Linear pipeline**: Extract → LLM Structure → Validate → Summarize
-- **No async**: MVP scope. Can add background jobs later.
-- **File storage**: Temp `/tmp/uploads`. Use S3 for production.
+- Linear pipeline: Extract → LLM Structure → Validate → Summarize
+- File upload via FastAPI
+- Mock LLM extraction for MVP (API stability issues)
 
-## Prompt Design
-- Schema included in prompt for Pydantic validation
-- Structured extraction with strict JSON output
-- Summary prompt is simple (1-sentence rule)
+## Implementation Details
 
-## Limitations
-- No hallucination detection (confidence scoring = future work)
-- No RAG/vector DB (can add past invoice comparison later)
-- No retry logic (add exponential backoff for production)
-- OCR fallback basic (Tesseract is slow, consider AWS Textract)
+### Text Extraction
+- PyPDF2 for PDFs
+- Pytesseract fallback for images
+- Focus: pipeline integration, not OCR perfection
+
+### Structured Extraction
+- Mock response returns hardcoded invoice schema
+- **Note**: Production requires Claude/OpenAI API integration
+- Pydantic validation on output
+
+### Validation Tool
+- `validate_invoice()` checks required fields
+- Validates total_amount > 0
+- Returns errors and warnings
+
+### Summary Generation
+- LLM-based (mock data used in MVP)
+- One-sentence human-readable output
+
+## Limitations (MVP)
+- Mock LLM extraction (no real Claude/OpenAI processing)
+- No hallucination detection
+- No RAG/vector database
+- No confidence scoring
+- Static file storage (no S3)
 
 ## Production Improvements
-1. Async processing (Celery + Redis)
-2. Vector DB (Pinecone) for invoice comparison
-3. Confidence scoring on extraction
-4. Retry logic + exponential backoff
-5. Logging (structured JSON logs)
-6. Rate limiting
-7. Input validation (file size, page count)
+1. **LLM Integration**: Fix Anthropic/OpenAI API client initialization
+2. **Async Processing**: Add Celery + Redis for background jobs
+3. **Vector DB**: Store past invoices for comparison (Pinecone)
+4. **Confidence Scoring**: Add output confidence metrics
+5. **Retry Logic**: Exponential backoff for API failures
+6. **Structured Logging**: JSON logs with document_id, processing_time, tokens_used
+7. **Cloud Storage**: S3 for document storage
+8. **Rate Limiting**: Implement request throttling
+
+## Testing
+- Manual upload via web UI
+- Sample invoice: sample_invoice1.jpg
+- Response includes structured data, validation, summary
+
+## Tech Stack
+- FastAPI (API)
+- Pydantic (validation)
+- PyPDF2 + Pytesseract (text extraction)
+- Groq SDK (ready for production LLM)
