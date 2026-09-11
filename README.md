@@ -5,7 +5,7 @@ Extract structured financial data from invoices and receipts.
 ## Setup
 
 ```bash
-git clone <your-repo-url>
+git clone <repo-url>
 cd document-intelligence-agent
 python3 -m venv venv
 
