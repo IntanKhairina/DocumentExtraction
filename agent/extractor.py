@@ -1,50 +1,48 @@
-from anthropic import Anthropic
-from pydantic import BaseModel
+# import json
+# import os
+# from groq import Groq
+
+# def extract_structured_data(raw_text: str) -> dict:
+#     api_key = os.getenv("GROQ_API_KEY")
+#     if not api_key:
+#         return {"error": "GROQ_API_KEY not set"}
+    
+#     client = Groq(api_key=api_key)
+    
+#     response = client.chat.completions.create(
+#         model="llama-3.1-8b-instant",
+#         max_tokens=500,
+#         messages=[{
+#             "role": "user",
+#             "content": f"""Extract JSON from invoice text: 
+# {raw_text[:1000]}
+
+# Return ONLY: {{"vendor": "...", "invoice_number": "...", "invoice_date": "...", "due_date": "...", "total_amount": 0.00, "currency": "..."}}"""
+#         }]
+#     )
+    
+#     try:
+#         return json.loads(response.choices[0].message.content)
+#     except:
+#         return {"vendor": "N/A", "invoice_number": "N/A", "total_amount": 0, "currency": "USD"}
+
 import json
 
-class InvoiceData(BaseModel):
-    document_type: str
-    vendor: str
-    invoice_number: str
-    invoice_date: str
-    due_date: str = None
-    total_amount: float
-    currency: str
-    line_items: list = None
-
 def extract_structured_data(raw_text: str) -> dict:
-    """Use Claude to extract structured invoice data"""
-    client = Anthropic()
-    
-    prompt = f"""Extract invoice information from this text. Return ONLY valid JSON matching this schema:
-{{
-    "document_type": "invoice",
-    "vendor": "...",
-    "invoice_number": "...",
-    "invoice_date": "YYYY-MM-DD",
-    "due_date": "YYYY-MM-DD",
-    "total_amount": 0.00,
-    "currency": "MYR",
-    "line_items": []
-}}
-
-TEXT:
-{raw_text}
-
-Return ONLY the JSON object, no markdown."""
-
-    response = client.messages.create(
-        model="claude-opus-4-1",
-        max_tokens=1000,
-        messages=[
-            {"role": "user", "content": prompt}
+    """Mock extraction - returns sample invoice data"""
+    return {
+        "document_type": "invoice",
+        "vendor": "Green, Sanchez and Shannon",
+        "invoice_number": "26388025",
+        "invoice_date": "2018-09-01",
+        "due_date": "2018-10-01",
+        "total_amount": 20.72,
+        "currency": "USD",
+        "line_items": [
+            {
+                "description": "14 Colors Women Spaghetti Strap Bodycon Mini Dress",
+                "quantity": 4.0,
+                "amount": 20.72
+            }
         ]
-    )
-    
-    try:
-        # Extract JSON from response
-        json_str = response.content[0].text
-        data = json.loads(json_str)
-        return InvoiceData(**data).model_dump()
-    except Exception as e:
-        return {"error": str(e), "raw_response": response.content[0].text}
+    }
