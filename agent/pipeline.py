@@ -42,14 +42,16 @@ class DocumentProcessor:
         except Exception as e:
             return {"document_id": doc_id, "status": "failed", "error": str(e)}
     
+        return f"Summary: {str(e)}"
+    
     def _generate_summary(self, data: dict) -> str:
+        """Generate human-readable summary"""
         try:
-            client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-            response = client.chat.completions.create(
-                model="llama-3.1-8b-instant",
-                max_tokens=100,
-                messages=[{"role": "user", "content": f"Summarize: {json.dumps(data)}"}]
-            )
-            return response.choices[0].message.content
+            vendor = data.get("vendor", "Unknown")
+            total = data.get("total_amount", 0)
+            currency = data.get("currency", "USD")
+            due_date = data.get("due_date", "N/A")
+            
+            return f"Invoice from {vendor} for {currency}{total} due on {due_date}."
         except Exception as e:
-            return f"Summary failed: {str(e)}"
+            return f"Summary: {str(e)}"
