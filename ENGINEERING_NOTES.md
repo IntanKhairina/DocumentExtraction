@@ -27,7 +27,7 @@ Engineering Notes
 - One-sentence human-readable output
 
 ## Limitations (MVP)
-- Mock LLM extraction (no real Claude/OpenAI processing)
+- Mock LLM extraction (no real AI model processing)
 - No hallucination detection
 - No RAG/vector database
 - No confidence scoring
@@ -41,7 +41,6 @@ Engineering Notes
 5. **Retry Logic**: Exponential backoff for API failures
 6. **Structured Logging**: JSON logs with document_id, processing_time, tokens_used
 7. **Cloud Storage**: S3 for document storage
-8. **Rate Limiting**: Implement request throttling
 
 ## Testing
 - Manual upload via web UI
